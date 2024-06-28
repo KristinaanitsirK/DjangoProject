@@ -1,26 +1,13 @@
 from django.db import models
+from .resources import POSITIONS
 from datetime import datetime
 
 
 class Staff(models.Model):
-    director = 'DI'
-    admin = 'AD'
-    cook = 'CO'
-    cashier = 'CA'
-    cleaner = 'CL'
-
-    POSITIONS = [
-        (director, 'Director'),
-        (admin, 'Администратор'),
-        (cook, 'Повар'),
-        (cashier, 'Кассир'),
-        (cleaner, 'Уборщик')
-    ]
-
     full_name = models.CharField(max_length=255)
     position = models.CharField(max_length=2,
                                 choices=POSITIONS,
-                                default=cashier)
+                                default='CA')
     labor_contract = models.IntegerField()
 
     def get_last_name(self):
