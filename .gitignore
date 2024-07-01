@@ -1,2 +1,6 @@
 __pycache__/
 .idea
+eshop/__pycache__/
+eshop/migrations/__pycache__/
+simpleapp/__pycache__/
+
