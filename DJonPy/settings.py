@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'fpages',
     'eshop',
     'simpleapp',
+    'django_filters',
 ]
 
 SITE_ID = 1
@@ -135,3 +136,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
     os.path.join(BASE_DIR, 'simpleapp'),
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
