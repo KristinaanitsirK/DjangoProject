@@ -3,7 +3,10 @@ from django.shortcuts import render
 # что в этом представлении мы будем выводить список объектов из БД
 from django.views.generic import ListView, DetailView
 from .models import Product
-from datetime import datetime
+# from datetime import datetime
+from .filters import ProductFilter
+from .forms import ProductForm
+from django.http import HttpResponseRedirect
 
 
 class ProductList(ListView):
@@ -18,6 +21,15 @@ class ProductList(ListView):
     context_object_name = 'products'  # Объявляем, как хотим назвать переменную в шаблоне
     paginate_by = 3  # вот так мы можем указать количество записей на странице
 
+    def get_queryset(self):
+        queryset = super().get_queryset()  # Получаем обычный запрос
+        # Используем наш класс фильтрации.
+        # self.request.GET содержит объект QueryDict, который мы рассматривали в этом юните ранее.
+        # Сохраняем нашу фильтрацию в объекте класса, чтобы потом добавить в контекст и использовать в шаблоне.
+        self.filterset = ProductFilter(self.request.GET, queryset)
+        # Возвращаем из функции отфильтрованный список товаров
+        return self.filterset.qs
+
     # Метод get_context_data позволяет нам изменить набор данных,
     # который будет передан в шаблон.
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -31,8 +43,8 @@ class ProductList(ListView):
         # Добавим ещё одну пустую переменную,
         # чтобы на её примере рассмотреть работу ещё одного фильтра.
         context['next_sale'] = None
+        context['filterset'] = self.filterset
         return context
-
 
 
 class ProductDetail(DetailView):
@@ -40,3 +52,15 @@ class ProductDetail(DetailView):
     template_name = 'product.html'
     context_object_name = 'product'
 
+
+def create_product(request):
+    form = ProductForm()
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/products/')
+
+    return render(request, 'product_edit.html', {'form': form})
