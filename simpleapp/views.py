@@ -1,12 +1,14 @@
 from django.shortcuts import render
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
-from django.views.generic import ListView, DetailView
+from django.views.generic import (ListView, DetailView, CreateView,
+                                  UpdateView, DeleteView)
 from .models import Product
 # from datetime import datetime
 from .filters import ProductFilter
 from .forms import ProductForm
 from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 
 
 class ProductList(ListView):
@@ -53,14 +55,32 @@ class ProductDetail(DetailView):
     context_object_name = 'product'
 
 
-def create_product(request):
-    form = ProductForm()
+# def create_product(request):
+#     form = ProductForm()
+#
+#     if request.method == 'POST':
+#         form = ProductForm(request.POST)
+#
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect('/products/')
+#
+#     return render(request, 'product_edit.html', {'form': form})
 
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
 
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/products/')
+class ProductCreate(CreateView):
+    form_class = ProductForm
+    model = Product
+    template_name = 'product_edit.html'
 
-    return render(request, 'product_edit.html', {'form': form})
+
+class ProductUpdate(UpdateView):
+    form_class = ProductForm
+    model = Product
+    template_name = 'product_edit.html'
+
+
+class ProductDelete(DeleteView):
+    model = Product
+    template_name = 'product_delete.html'
+    success_url = reverse_lazy('product_list')
