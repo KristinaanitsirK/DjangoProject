@@ -1,14 +1,19 @@
 from django.shortcuts import render
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 from django.views.generic import (ListView, DetailView, CreateView,
                                   UpdateView, DeleteView)
+
 from .models import Product
 # from datetime import datetime
 from .filters import ProductFilter
 from .forms import ProductForm
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
+
+
 
 
 class ProductList(ListView):
@@ -21,7 +26,7 @@ class ProductList(ListView):
     # Это имя списка, в котором будут лежать все объекты.
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'products'  # Объявляем, как хотим назвать переменную в шаблоне
-    paginate_by = 3  # вот так мы можем указать количество записей на странице
+    paginate_by = 6  # вот так мы можем указать количество записей на странице
 
     def get_queryset(self):
         queryset = super().get_queryset()  # Получаем обычный запрос
@@ -68,7 +73,8 @@ class ProductDetail(DetailView):
 #     return render(request, 'product_edit.html', {'form': form})
 
 
-class ProductCreate(CreateView):
+class ProductCreate(LoginRequiredMixin, CreateView):
+    raise_exception = True
     form_class = ProductForm
     model = Product
     template_name = 'product_edit.html'

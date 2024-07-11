@@ -57,7 +57,7 @@ Products
 
     {% if page_obj.has_previous %}
         <a href="?{% url_replace page=1 %}">1</a>
-        {% if page_obj.previous_page_number != 1%}
+        {% if page_obj.previous_page_number != 1 %}
         ...
         <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
         {% endif %}
