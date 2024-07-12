@@ -2,7 +2,7 @@ from django.shortcuts import render
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (ListView, DetailView, CreateView,
                                   UpdateView, DeleteView)
@@ -73,20 +73,23 @@ class ProductDetail(DetailView):
 #     return render(request, 'product_edit.html', {'form': form})
 
 
-class ProductCreate(LoginRequiredMixin, CreateView):
+class ProductCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('simpleapp.add_product',)
     raise_exception = True
     form_class = ProductForm
     model = Product
     template_name = 'product_edit.html'
 
 
-class ProductUpdate(UpdateView):
+class ProductUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('simpleapp.change_product',)
     form_class = ProductForm
     model = Product
     template_name = 'product_edit.html'
 
 
-class ProductDelete(DeleteView):
+class ProductDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('simpleapp.delete_product',)
     model = Product
     template_name = 'product_delete.html'
     success_url = reverse_lazy('product_list')
