@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -138,11 +142,6 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
     os.path.join(BASE_DIR, 'simpleapp'),
@@ -151,6 +150,13 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# User authentication settings
 
 LOGIN_REDIRECT_URL = '/products'
 
@@ -162,3 +168,33 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}
 
+
+# Email settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.yandex.ru'
+
+EMAIL_PORT = 465
+
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+EMAIL_USE_TLS = False
+
+EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+
+SERVER_EMAIL = os.getenv('EMAIL_HOST_USER')
+
+EMAIL_SUBJECT_PREFIX = 'SimpleApp'
+
+# MANAGERS = os.getenv('MANAGERS')
+#
+# ADMINS = os.getenv('ADMINS')
+
+MANAGERS = (('Kristina', 'kristina.nte@icloud.com'), ('Kris', 'kristinante@yandex.ru'))
+
+ADMINS = (('Kristina', 'kristina.nte@icloud.com'), ('Kris', 'kristinante@yandex.com'))
