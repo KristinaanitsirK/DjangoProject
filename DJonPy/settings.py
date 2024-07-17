@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 
-load_dotenv()
+load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -164,7 +164,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}
 
@@ -191,10 +191,11 @@ SERVER_EMAIL = os.getenv('EMAIL_HOST_USER')
 
 EMAIL_SUBJECT_PREFIX = 'SimpleApp'
 
-# MANAGERS = os.getenv('MANAGERS')
-#
-# ADMINS = os.getenv('ADMINS')
+MANAGERS = [
+    (os.getenv('MANAGER1_NAME'), os.getenv('MANAGER1_EMAIL')),
+    (os.getenv('MANAGER2_NAME'), os.getenv('MANAGER2_EMAIL')),
+]
 
-MANAGERS = (('Kristina', 'kristina.nte@icloud.com'), ('Kris', 'kristinante@yandex.ru'))
-
-ADMINS = (('Kristina', 'kristina.nte@icloud.com'), ('Kris', 'kristinante@yandex.com'))
+ADMINS = [
+    (os.getenv('ADMIN1_NAME'), os.getenv('ADMIN1_EMAIL')),
+]
