@@ -2,19 +2,17 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (ListView, DetailView, CreateView,
                                   UpdateView, DeleteView)
+from django.core.cache import cache
 
 from .models import Product, Subscription, Category
 # from datetime import datetime
 from .filters import ProductFilter
 from .forms import ProductForm
 from django.http import HttpResponseRedirect
-
-
 
 
 class ProductList(ListView):
@@ -59,6 +57,15 @@ class ProductDetail(DetailView):
     model = Product
     template_name = 'product.html'
     context_object_name = 'product'
+    queryset = Product.objects.all()
+
+    def get_object(self, queryset=None):
+        obj = cache.get(f'product-{self.kwargs["pk"]}', None)
+
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'product-{self.kwargs["pk"]}', obj)
+        return obj
 
 
 # def create_product(request):

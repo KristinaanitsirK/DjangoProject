@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core.cache import cache
 
 class Product(models.Model):
     name = models.CharField(max_length=64, unique=True)
@@ -18,6 +19,10 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail', args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'product-{self["pk"]}')
 
 
 class Category(models.Model):
